@@ -23,6 +23,7 @@
 LS_VERSION=0.3
 
 LS_OUTPUT=${LS_OUTPUT:-/dev/stdout}
+LS_COLOR=${LS_COLOR:-ON}
 # XXX need more flexible templating, currently manual padding for level names
 LS_DEFAULT_FMT=${LS_DEFAULT_FMT:-'[$TS][$_LS_LEVEL_STR][${FUNCNAME[1]}:${BASH_LINENO[0]}]'}
 
@@ -34,13 +35,24 @@ LS_CRITICAL_LEVEL=50
 LS_LEVEL=${LS_LEVEL:-$LS_WARNING_LEVEL}
 # LS_LEVELS structure:
 # Level, Level Name, Level Format, Before Log Entry, After Log Entry
-LS_LEVELS=(
-  $LS_DEBUG_LEVEL    'DEBUG   ' "$LS_DEFAULT_FMT" "\e[1;34m"    "\e[0m"
-  $LS_INFO_LEVEL     'INFO    ' "$LS_DEFAULT_FMT" "\e[1;32m"    "\e[0m"
-  $LS_WARNING_LEVEL  'WARNING ' "$LS_DEFAULT_FMT" "\e[1;33m"    "\e[0m"
-  $LS_ERROR_LEVEL    'ERROR   ' "$LS_DEFAULT_FMT" "\e[1;31m"    "\e[0m"
-  $LS_CRITICAL_LEVEL 'CRITICAL' "$LS_DEFAULT_FMT" "\e[1;37;41m" "\e[0m"
-)
+
+if  [ ${LS_COLOR} ==  "ON" ] ; then 
+    LS_LEVELS=(
+        $LS_DEBUG_LEVEL    'DEBUG   ' "$LS_DEFAULT_FMT" "\e[1;34m"    "\e[0m"
+        $LS_INFO_LEVEL     'INFO    ' "$LS_DEFAULT_FMT" "\e[1;32m"    "\e[0m"
+        $LS_WARNING_LEVEL  'WARNING ' "$LS_DEFAULT_FMT" "\e[1;33m"    "\e[0m"
+        $LS_ERROR_LEVEL    'ERROR   ' "$LS_DEFAULT_FMT" "\e[1;31m"    "\e[0m"
+        $LS_CRITICAL_LEVEL 'CRITICAL' "$LS_DEFAULT_FMT" "\e[1;37;41m" "\e[0m"
+    )
+else 
+    LS_LEVELS=(
+        $LS_DEBUG_LEVEL    'DEBUG   ' "$LS_DEFAULT_FMT" "" ""
+        $LS_INFO_LEVEL     'INFO    ' "$LS_DEFAULT_FMT" "" ""
+        $LS_WARNING_LEVEL  'WARNING ' "$LS_DEFAULT_FMT" "" ""
+        $LS_ERROR_LEVEL    'ERROR   ' "$LS_DEFAULT_FMT" "" ""
+        $LS_CRITICAL_LEVEL 'CRITICAL' "$LS_DEFAULT_FMT" "" ""
+    )
+fi
 
 _LS_FIND_LEVEL_STR () {
   local LEVEL=$1
